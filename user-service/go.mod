@@ -12,7 +12,7 @@ require (
 )
 
 require (
-	github.com/D1Y0RBEKORIFJONOV/ekzamen-5protos v0.0.8 // indirect
+	github.com/D1Y0RBEKORIFJONOV/ekzamen-5protos v0.2.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect

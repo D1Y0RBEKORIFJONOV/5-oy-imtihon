@@ -2,6 +2,8 @@ github.com/D1Y0RBEKORIFJONOV/SmartHome_Protos v0.1.1 h1:n6pDLuQP2gT6uVoKcVdbpuiz
 github.com/D1Y0RBEKORIFJONOV/SmartHome_Protos v0.1.1/go.mod h1:4ru37pbsApTcO5E2sneZPV7YTj23LtD4S5lw/f1Y85o=
 github.com/D1Y0RBEKORIFJONOV/ekzamen-5protos v0.0.8 h1:NmYACAq2nYJ20A6dX08VAIKAb0plcJ6wqatnIc7Ghbc=
 github.com/D1Y0RBEKORIFJONOV/ekzamen-5protos v0.0.8/go.mod h1:r5pVChTM7g48ZEIX9Dc431NT+Oj0EC6eBGhgT1cCnd8=
+github.com/D1Y0RBEKORIFJONOV/ekzamen-5protos v0.2.1 h1:Ve2ZhXOn2QTBAuFHQdvUj9OH50wfxDj4gJqhX/5TnMY=
+github.com/D1Y0RBEKORIFJONOV/ekzamen-5protos v0.2.1/go.mod h1:r5pVChTM7g48ZEIX9Dc431NT+Oj0EC6eBGhgT1cCnd8=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/golang-jwt/jwt/v5 v5.2.1 h1:OuVbFODueb089Lh128TAcimifWaLhJwVflnrgM17wHk=

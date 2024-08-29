@@ -32,9 +32,7 @@ func NewConsumer(cfg *config.Config, logger *slog.Logger) (*Consumer, error) {
 	for i := 0; i < 1; i++ {
 		consumer, err = kgo.NewClient(
 			kgo.SeedBrokers("broker:29092"),
-			kgo.ConsumeTopics("BOOKING_SERVICE"),
-			kgo.AllowAutoTopicCreation(),
-			kgo.ConsumerGroup("1"),
+			kgo.ConsumeTopics("QQQQQ"),
 		)
 		if err != nil {
 			logger.Error("err", err.Error())
@@ -66,7 +64,7 @@ func (c *Consumer) Consume() {
 		slog.String("event", op))
 	ctx := context.Background()
 
-	for {
+	for false {
 		fetches := c.consumer.PollFetches(ctx)
 
 		if errs := fetches.Errors(); len(errs) > 0 {
@@ -119,6 +117,10 @@ func (c *Consumer) createOrder(ctx context.Context, value []byte) (bool, error) 
 	}
 	log.Println("AAAAAAAAAAAAAAAAAAA", user)
 	status, err := c.user.BookingServiceClient().CreateBooking(ctx, req)
+	if err != nil {
+		log.Println("errrr")
+		return false, err
+	}
 	if status != nil && status.IsError {
 		_, err = c.user.NotificationServiceClient().AddNotification(ctx, &notificationpb.AddNotificationReq{
 			UserId: req.UserID,

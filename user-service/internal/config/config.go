@@ -29,6 +29,8 @@ type Config struct {
 			Delete         []byte
 			UpdateEmail    []byte
 			UpdatePassword []byte
+			CreateOrder    []byte
+			AddWaitGroup   []byte
 		}
 	}
 	NotificationUrl string
@@ -83,6 +85,9 @@ func New() *Config {
 	config.MessageBrokerUses.Keys.Update = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE"))
 	config.MessageBrokerUses.Keys.UpdateEmail = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE_EMAIL"))
 	config.MessageBrokerUses.Keys.UpdatePassword = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE_PASSWORD"))
+
+	config.MessageBrokerUses.Keys.CreateOrder = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "CREATE_ORDER"))
+	config.MessageBrokerUses.Keys.AddWaitGroup = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "ADD_WAIT"))
 
 	config.NotificationUrl = getEnv("NOTIFICATION_URL", "notification_service_container:9001")
 	return &config

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	user1 "github.com/D1Y0RBEKORIFJONOV/SmartHome_Protos/gen/go/user"
+	bookingpb "github.com/D1Y0RBEKORIFJONOV/ekzamen-5protos/gen/go/booking"
 	notificationpb "github.com/D1Y0RBEKORIFJONOV/ekzamen-5protos/gen/go/notification"
 	"github.com/twmb/franz-go/pkg/kgo"
 	"log"
@@ -116,6 +117,21 @@ func (c *Consumer) Consume() {
 						continue
 					}
 					log.Info("Update password", status)
+				case bytes.Equal(record.Key, c.cfg.MessageBrokerUses.Keys.CreateOrder):
+					status, err := c.createOrder(ctx, record.Value)
+					if err != nil {
+						log.Error("err", err.Error())
+						continue
+					}
+					log.Info("Create order", status)
+				case bytes.Equal(record.Key, c.cfg.MessageBrokerUses.Keys.AddWaitGroup):
+					status, err := c.addWaitGroup(ctx, record.Value)
+					if err != nil {
+						log.Error("err", err.Error())
+						continue
+
+					}
+					log.Info("Add WaitGroup", status)
 				}
 			}
 		})
@@ -311,4 +327,99 @@ func (c *Consumer) updatePassword(ctx context.Context, value []byte) (bool, erro
 		c.logger.Error("email:err", err.Error())
 	}
 	return status.Successfully, err
+}
+
+func (c *Consumer) createOrder(ctx context.Context, value []byte) (bool, error) {
+	var req *bookingpb.CreateBookingReq
+	err := json.Unmarshal(value, &req)
+	if err != nil {
+		return false, err
+	}
+	user, err := c.user.UserServiceClient().GetUser(ctx, &user1.GetUserReq{
+		Filed: "id",
+		Value: req.UserID,
+	})
+	if err != nil {
+		return false, err
+	}
+	log.Println("AAAAAAAAAAAAAAAAAAA", user)
+	status, err := c.user.BookingServiceClient().CreateBooking(ctx, req)
+	if err != nil {
+		log.Println("errrr")
+		return false, err
+	}
+	if status != nil && status.IsError {
+		_, err = c.user.NotificationServiceClient().AddNotification(ctx, &notificationpb.AddNotificationReq{
+			UserId: req.UserID,
+			Messages: &notificationpb.CreateMessage{
+				SenderName: "BOOKING-SERVICE",
+				Status:     "ushbu type dagi honada joy qolamagan!",
+			},
+		})
+		if err != nil {
+			return false, err
+		}
+		_, err = c.user.NotificationServiceClient().SendEmailNotification(ctx, &notificationpb.SendEmailNotificationReq{
+			Email:        user.Email,
+			SenderName:   "BOOKING-SERVICE",
+			Notification: "ushbu type dagi honada joy qolamagan!",
+		})
+		if err != nil {
+			return false, err
+		}
+		return true, nil
+	}
+
+	_, err = c.user.NotificationServiceClient().AddNotification(ctx, &notificationpb.AddNotificationReq{
+		UserId: user.Id,
+		Messages: &notificationpb.CreateMessage{
+			SenderName: "USER-SERVICE",
+			Status:     "siz  honaga buyurmani mufaqiyatli yakunladingiz!",
+		},
+	})
+	if err != nil {
+		return false, err
+	}
+
+	return true, err
+}
+
+func (c *Consumer) addWaitGroup(ctx context.Context, value []byte) (bool, error) {
+	var req *bookingpb.AddUserToWaitingGroupReq
+	err := json.Unmarshal(value, &req)
+	if err != nil {
+		log.Fatal(err)
+		return false, err
+	}
+	user, err := c.user.UserServiceClient().GetUser(ctx, &user1.GetUserReq{
+		Filed: "id",
+		Value: req.UserId,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	_, err = c.user.BookingServiceClient().AddUserToWaitingGroup(ctx, req)
+	if err != nil {
+		return false, err
+	}
+
+	_, err = c.user.NotificationServiceClient().AddNotification(ctx, &notificationpb.AddNotificationReq{
+		UserId: user.Id,
+		Messages: &notificationpb.CreateMessage{
+			SenderName: "BOOKING-SERVICE",
+			Status:     fmt.Sprintf("siz %s turidagi honalar uchun  kutush listigda qoshildingiz", req.RoomType),
+		},
+	})
+
+	_, err = c.user.NotificationServiceClient().SendEmailNotification(ctx, &notificationpb.SendEmailNotificationReq{
+		Email:        user.Email,
+		SenderName:   "USER-SERVICE",
+		Notification: fmt.Sprintf("siz %s turidagi honalar uchun  kutush listigda qoshildingiz", req.RoomType),
+	})
+
+	if err != nil {
+		c.logger.Error("email:err", err.Error())
+	}
+	return true, err
 }

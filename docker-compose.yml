@@ -47,7 +47,8 @@ services:
     build: ./hotel-service
     container_name: hotel_service_container
     environment:
-      - PG_URL=postgres://postgres:2005@hotel_postgres:5432/hotel?sslmode=disable
+      - PG_HOST=hotel_postgres
+      - PG_PORT=5432
     ports:
       - 9004:9004
     depends_on:
@@ -59,7 +60,8 @@ services:
     build: ./booking-service
     container_name: booking_service_container
     environment:
-      - PG_URL=postgres://postgres:+_+diyor2005+_+@booking_postgres:5432/booking?sslmode=disable
+      - PG_HOST=booking_postgres
+      - PG_PORT=5432
     ports:
       - 9003:9003
     depends_on:
@@ -146,17 +148,14 @@ services:
     image: postgres:14-alpine
     container_name: hotel_postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: +_+diyor2005+_+
-      POSTGRES_DB: hotel
-      PGDATA: /var/lib/postgresql/data
+      - PG_URL=postgres://postgres:+_+diyor2005+_+@hotel_postgres:5432/hotel?sslmode=disable
     volumes:
       - hotel-db-data:/var/lib/postgresql/data
       - ./hotel-service/migrations:/docker-entrypoint-initdb.d
     ports:
-      - "5433:5432"
+      - "5433:5432"  # Измените хост-порт на 5433
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d hotel || exit 1"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d hotel || exit 1" ]
       interval: 30s
       retries: 3
       start_period: 30s
@@ -179,15 +178,12 @@ services:
     image: postgres:14-alpine
     container_name: booking_postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: +_+diyor2005+_+
-      POSTGRES_DB: booking
-      PGDATA: /var/lib/postgresql/data
+      - PG_URL=postgres://postgres:2005@hotel_postgres:5432/booking?sslmode=disable
     volumes:
       - booking-db-data:/var/lib/postgresql/data
       - ./booking-service/migrations:/docker-entrypoint-initdb.d
     ports:
-      - "5434:5432"
+      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d booking || exit 1"]
       interval: 30s

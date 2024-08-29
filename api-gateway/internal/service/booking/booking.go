@@ -45,7 +45,7 @@ func (b *Booking) CreateBooking(ctx context.Context, req *bookingentity.CreateBo
 		log.Error("err", err.Error())
 		return nil, err
 	}
-	err = producer.Producer(b.cfg.MessageBrokerUses.KeysBooking.CreateOrder, reqBytes, b.cfg.MessageBrokerUses.TopicBooking)
+	err = producer.Producer(b.cfg.MessageBrokerUses.KeysBooking.CreateOrder, reqBytes, b.cfg.MessageBrokerUses.Topic)
 	if err != nil {
 		log.Error("err", err.Error())
 		return nil, err
@@ -83,7 +83,7 @@ func (b *Booking) AddUserToWaitingGroup(ctx context.Context, req *bookingentity.
 		log.Error("err", err.Error())
 		return nil, err
 	}
-	err = producer.Producer(b.cfg.MessageBrokerUses.KeysBooking.AddWaitGroup, reqBytes, b.cfg.MessageBrokerUses.TopicBooking)
+	err = producer.Producer(b.cfg.MessageBrokerUses.KeysBooking.AddWaitGroup, reqBytes, b.cfg.MessageBrokerUses.Topic)
 	if err != nil {
 		log.Error("err", err.Error())
 		return nil, err

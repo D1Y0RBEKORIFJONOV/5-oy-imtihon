@@ -6,7 +6,7 @@ run:
 migrate-file:
 	migrate create -ext sql -dir migrations/ -seq ${name}
 
-DB_URL := "postgres://postgres:+_+diyor2005+_+@localhost:5432/booking?sslmode=disable"
+DB_URL := "postgres://postgres:+_+diyor2005+_+@booking_postgres:5432/booking?sslmode=disable"
 
 migrate-up:
 	migrate -path migrations -database $(DB_URL) -verbose up
