@@ -20,4 +20,3 @@ RUN chmod 600 /app/internal/config/certf/localhost.pem /app/internal/config/cert
 
 
 CMD ["/app/main"]
-

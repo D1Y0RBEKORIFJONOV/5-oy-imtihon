@@ -75,14 +75,14 @@ func New() *Config {
 
 	config.RabbitMQURL = getEnv("RabbitMQ_URL", "amqp://guest:guest@localhost:5672/")
 
-	config.HotelUrl = getEnv("Hotel_URL", "hotel_service:9004")
-	config.UserUrl = getEnv("User_URL", "user_service:9000")
+	config.HotelUrl = getEnv("Hotel_URL", "hotel_service_container:9004")
+	config.UserUrl = getEnv("User_URL", "user_service_container:9000")
 
 	config.MessageBrokerUses.URL = getEnv("KAFKA_URL", "broker:29092")
-	config.MessageBrokerUses.Topic = getEnv("MESSAGE_BROKER_USE_TOKEN", "BOOKING-SERVICE")
+	config.MessageBrokerUses.Topic = getEnv("MESSAGE_BROKER_USE_TOKEN", "BOOKING_SERVICE")
 	config.MessageBrokerUses.Keys.CreateOrder = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "CREATE_ORDER"))
 	config.MessageBrokerUses.Keys.AddWaitGroup = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "ADD_WAIT"))
-	config.NotificationUrl = getEnv("NOTIFICATION_URCL", "hotel_service:9001")
+	config.NotificationUrl = getEnv("NOTIFICATION_URCL", "notification_service_container:9001")
 	return &config
 }
 

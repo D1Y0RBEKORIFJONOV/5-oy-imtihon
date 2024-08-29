@@ -110,7 +110,7 @@ services:
 
   broker:
     image: apache/kafka:latest
-    container_name: kafka_broker
+    container_name: broker
     ports:
       - "9092:29092"
     environment:

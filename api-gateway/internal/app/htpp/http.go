@@ -40,6 +40,10 @@ func (app *App) Start() {
 		"/localhost.pem",
 		"/localhost-key.pem")
 	if err != nil {
+		log.Error("Error starting server", "error", err)
+		return
+	}
+	if err != nil {
 		log.Info("Failed to start server", "error", err)
 	}
 }

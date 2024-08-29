@@ -11,15 +11,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	"golang.org/x/time/rate"
 )
 
-var (
-	rateLimiters = map[string]*rate.Limiter{
-		"user":         rate.NewLimiter(1, 1),
-		"unauthorized": rate.NewLimiter(1, 10),
-	}
-)
+//var (
+//	rateLimiters = map[string]*rate.Limiter{
+//		"user":         rate.NewLimiter(1, 10),
+//		"unauthorized": rate.NewLimiter(1, 10),
+//	}
+//)
 
 func Middleware(c *gin.Context) {
 	allow, err := CheckPermission(c.Request)
@@ -42,18 +41,18 @@ func Middleware(c *gin.Context) {
 		return
 	}
 
-	role, _ := GetRole(c.Request)
-	limiter, exists := rateLimiters[role]
-	if !exists {
-		limiter = rateLimiters["unauthorized"]
-	}
-
-	if !limiter.Allow() {
-		c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
-			"error": "rate limit exceeded",
-		})
-		return
-	}
+	//role, _ := GetRole(c.Request)
+	//limiter, exists := rateLimiters[role]
+	//if !exists {
+	//	limiter = rateLimiters["unauthorized"]
+	//}
+	//
+	//if !limiter.Allow() {
+	//	c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
+	//		"error": "rate limit exceeded",
+	//	})
+	//	return
+	//}
 
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")

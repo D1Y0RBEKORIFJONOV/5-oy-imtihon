@@ -31,9 +31,10 @@ func NewConsumer(cfg *config.Config, logger *slog.Logger) (*Consumer, error) {
 
 	for i := 0; i < 1; i++ {
 		consumer, err = kgo.NewClient(
-			kgo.SeedBrokers(cfg.MessageBrokerUses.URL),
-			kgo.ConsumeTopics(cfg.MessageBrokerUses.Topic),
-			kgo.ConsumerGroup("booking_service"),
+			kgo.SeedBrokers("broker:29092"),
+			kgo.ConsumeTopics("BOOKING_SERVICE"),
+			kgo.AllowAutoTopicCreation(),
+			kgo.ConsumerGroup("1"),
 		)
 		if err != nil {
 			logger.Error("err", err.Error())
@@ -70,7 +71,7 @@ func (c *Consumer) Consume() {
 
 		if errs := fetches.Errors(); len(errs) > 0 {
 			for _, err := range errs {
-				log.Error("err", err)
+				log.Error("Kafka fetch error", err)
 			}
 			continue
 		}
@@ -84,18 +85,19 @@ func (c *Consumer) Consume() {
 				case bytes.Equal(record.Key, c.cfg.MessageBrokerUses.Keys.CreateOrder):
 					status, err := c.createOrder(ctx, record.Value)
 					if err != nil {
-						log.Error("err", err.Error())
+						log.Error("createOrder error", err)
 						continue
 					}
 					log.Info("Create user", status)
 				case bytes.Equal(record.Key, c.cfg.MessageBrokerUses.Keys.AddWaitGroup):
 					status, err := c.addWaitGroup(ctx, record.Value)
 					if err != nil {
-						log.Error("err", err.Error())
+						log.Error("addWaitGroup error", err)
 						continue
 					}
 					log.Info("Update user", status)
-
+				default:
+					log.Warn("Unknown key", string(record.Key))
 				}
 			}
 		})

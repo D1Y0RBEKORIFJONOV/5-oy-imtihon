@@ -11,7 +11,10 @@ RUN go mod download
 RUN go build -o /bin/consumer
 
 # Stage 2: Create the final image
-FROM scratch
+FROM alpine:latest
+
+# Устанавливаем CA сертификаты для поддержки SSL/TLS, если необходимо
+RUN apk add --no-cache ca-certificates
 
 COPY --from=build /bin/consumer /bin/consumer
 

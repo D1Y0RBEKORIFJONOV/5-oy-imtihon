@@ -79,10 +79,10 @@ func New() *Config {
 
 	config.RabbitMQURL = getEnv("RabbitMQ_URL", "amqp://guest:guest@localhost:5672/")
 
-	config.UserUrl = getEnv("User_URL", "user_service:9000")
-	config.NotificationUrl = getEnv("Notification_URL", "notification_service:9001")
-	config.BookingUrl = getEnv("Booking_URL", "booking_service:9003")
-	config.HotelUrl = getEnv("Hotel_URL", "hotel_service:9004")
+	config.UserUrl = getEnv("User_URL", "user_service_container:9000")
+	config.NotificationUrl = getEnv("Notification_URL", "notification_service_container:9001")
+	config.BookingUrl = getEnv("Booking_URL", "booking_service_container:9003")
+	config.HotelUrl = getEnv("Hotel_URL", "hotel_service_container:9004")
 	config.RedisURL = getEnv("REDIS_URL", "redis:6379")
 
 	config.MessageBrokerUses.URL = getEnv("KAFKA_URL", "broker:29092")
@@ -92,7 +92,7 @@ func New() *Config {
 	config.MessageBrokerUses.Keys.Update = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE"))
 	config.MessageBrokerUses.Keys.UpdateEmail = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE_EMAIL"))
 	config.MessageBrokerUses.Keys.UpdatePassword = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE_PASSWORD"))
-	config.MessageBrokerUses.TopicBooking = getEnv("MESSAGE_BROKER_USE_TOKEN", "BOOKING-SERVICE")
+	config.MessageBrokerUses.TopicBooking = getEnv("MESSAGE_BROKER_USE_TOKEN", "BOOKING_SERVICE")
 	config.MessageBrokerUses.KeysBooking.CreateOrder = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "CREATE_ORDER"))
 	config.MessageBrokerUses.KeysBooking.AddWaitGroup = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "ADD_WAIT"))
 	return &config

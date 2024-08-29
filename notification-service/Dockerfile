@@ -10,7 +10,9 @@ RUN go mod download
 
 RUN go build -o /bin/ntfk
 
-FROM scratch
+FROM alpine:latest
+
+RUN apk --no-cache add ca-certificates
 
 COPY --from=build /bin/ntfk /bin/ntfk
 

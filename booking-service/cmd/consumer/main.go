@@ -17,4 +17,5 @@ func main() {
 	log.Printf("Connecting to RabbitMQ")
 	log.Println("Starting consumer")
 	c.Consume()
+	log.Println("Stopping consumer")
 }

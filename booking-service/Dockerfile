@@ -7,10 +7,11 @@ COPY . .
 WORKDIR /src/cmd/booking
 
 RUN go mod download
-
 RUN go build -o /bin/hello
 
-FROM scratch
+FROM alpine:latest
+
+RUN apk add --no-cache ca-certificates
 
 COPY --from=build /bin/hello /bin/hello
 

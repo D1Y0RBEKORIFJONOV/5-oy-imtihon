@@ -1,8 +1,6 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/D1Y0RBEKORIFJONOV/SmartHome_Protos v0.1.1 h1:n6pDLuQP2gT6uVoKcVdbpuizBH/dHo4ZhJiJNzsWNmk=
 github.com/D1Y0RBEKORIFJONOV/SmartHome_Protos v0.1.1/go.mod h1:4ru37pbsApTcO5E2sneZPV7YTj23LtD4S5lw/f1Y85o=
-github.com/D1Y0RBEKORIFJONOV/ekzamen-5protos v0.2.0 h1:9B/VXD5btX8LrOI40y1Rv7u6vKwBrYDop3Swa/WPdqg=
-github.com/D1Y0RBEKORIFJONOV/ekzamen-5protos v0.2.0/go.mod h1:r5pVChTM7g48ZEIX9Dc431NT+Oj0EC6eBGhgT1cCnd8=
 github.com/D1Y0RBEKORIFJONOV/ekzamen-5protos v0.2.1 h1:Ve2ZhXOn2QTBAuFHQdvUj9OH50wfxDj4gJqhX/5TnMY=
 github.com/D1Y0RBEKORIFJONOV/ekzamen-5protos v0.2.1/go.mod h1:r5pVChTM7g48ZEIX9Dc431NT+Oj0EC6eBGhgT1cCnd8=
 github.com/Masterminds/semver/v3 v3.1.1/go.mod h1:VPu/7SZ7ePZ3QOrcuXROw5FAcLl4a0cBrbBpGY/8hQs=

@@ -2,7 +2,7 @@ package notifactionservice
 
 import (
 	"context"
-	"ekzamen_5/notification-service/internal/email"
+	"ekzamen_5/notification-service/internal/email/email"
 	"ekzamen_5/notification-service/internal/entity"
 	notificationusecase "ekzamen_5/notification-service/internal/usecase/notification"
 	"log/slog"
@@ -121,7 +121,7 @@ func (n *Notification) SenEmail(ctx context.Context, to, senderName, content str
 		Recipient:  []string{to},
 		Tittle:     "Hotel booking system",
 	}
-	err := email.SendSecretCode(&email1)
+	err := email.SenSecretCode(email1)
 	if err != nil {
 		log.Error("err", err.Error())
 		return err

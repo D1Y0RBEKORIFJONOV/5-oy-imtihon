@@ -55,7 +55,7 @@ func New() *Config {
 	config.APP = getEnv("APP", "app")
 	config.Environment = getEnv("ENVIRONMENT", "develop")
 	config.LogLevel = getEnv("LOG_LEVEL", "local")
-	config.RPCPort = getEnv("RPC_PORT", "user_service:9000")
+	config.RPCPort = getEnv("RPC_PORT", "user_service_container:9000")
 	config.Context.Timeout = getEnv("CONTEXT_TIMEOUT", "30s")
 
 	config.DB.Host = getEnv("MONGO_HOST", "mongo")
@@ -84,7 +84,7 @@ func New() *Config {
 	config.MessageBrokerUses.Keys.UpdateEmail = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE_EMAIL"))
 	config.MessageBrokerUses.Keys.UpdatePassword = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE_PASSWORD"))
 
-	config.NotificationUrl = getEnv("NOTIFICATION_URL", "notification_service:9001")
+	config.NotificationUrl = getEnv("NOTIFICATION_URL", "notification_service_container:9001")
 	return &config
 }
 
