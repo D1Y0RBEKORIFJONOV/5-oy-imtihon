@@ -1,0 +1,233 @@
+version: '3.8'
+
+services:
+  api_gateway:
+    build: ./api-gateway
+    container_name: api_gateway
+    ports:
+      - 9006:9006
+    depends_on:
+      - booking_service
+      - hotel_service
+      - user_service
+      - notification_service
+      - broker
+      - redis
+    networks:
+      - mynetwork
+
+  user_service:
+    build: ./user-service
+    container_name: user_service_container
+    environment:
+      - MONGO_URL=mongodb://mongo:27017
+    depends_on:
+      - broker
+      - mongo
+      - notification_service
+      - consumer_user
+    networks:
+      - mynetwork
+
+  consumer_user:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile.consumer
+    container_name: consumer_user_service
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+    depends_on:
+      - broker
+    networks:
+      - mynetwork
+    volumes:
+      - consumer-user-data:/app/data
+
+  hotel_service:
+    build: ./hotel-service
+    container_name: hotel_service_container
+    environment:
+      - PG_URL=postgres://postgres:2005@hotel_postgres:5432/hotel?sslmode=disable
+    ports:
+      - 9004:9004
+    depends_on:
+      - hotel_postgres
+    networks:
+      - mynetwork
+
+  booking_service:
+    build: ./booking-service
+    container_name: booking_service_container
+    environment:
+      - PG_URL=postgres://postgres:+_+diyor2005+_+@booking_postgres:5432/booking?sslmode=disable
+    ports:
+      - 9003:9003
+    depends_on:
+      - booking_postgres
+      - migrate_booking
+      - broker
+      - hotel_service
+      - user_service
+      - notification_service
+    networks:
+      - mynetwork
+
+  consumer_booking:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile.consumer
+    container_name: consumer_booking_service
+    environment:
+      - PG_URL=postgres://postgres:+_+diyor2005+_+@booking_postgres:5432/booking?sslmode=disable
+    depends_on:
+      - broker
+    networks:
+      - mynetwork
+    volumes:
+      - consumer-user-data:/app/data
+
+  notification_service:
+    build: ./notification-service
+    container_name: notification_service_container
+    ports:
+      - "9001:9001"
+    depends_on:
+      - broker
+      - mongo
+    networks:
+      - mynetwork
+  websocket:
+    build: ./websocket
+    container_name: ws
+    ports:
+      - "9005:9005"
+    depends_on:
+      - redis
+      - notification_service
+    networks:
+      - mynetwork
+
+
+  broker:
+    image: apache/kafka:latest
+    container_name: kafka_broker
+    ports:
+      - "9092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@broker:29093
+      KAFKA_LISTENERS: PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    networks:
+      - mynetwork
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-db-data:/data/db
+    networks:
+      - mynetwork
+
+  hotel_postgres:
+    image: postgres:14-alpine
+    container_name: hotel_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: +_+diyor2005+_+
+      POSTGRES_DB: hotel
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - hotel-db-data:/var/lib/postgresql/data
+      - ./hotel-service/migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hotel || exit 1"]
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 10s
+    networks:
+      - mynetwork
+
+  migrate_hotel:
+    image: migrate/migrate
+    volumes:
+      - ./hotel-service/migrations:/migrations
+    command: ["-path", "/migrations", "-database", "postgres://postgres:+_+diyor2005+_+@hotel_postgres:5432/hotel?sslmode=disable", "up"]
+    depends_on:
+      hotel_postgres:
+        condition: service_healthy
+    networks:
+      - mynetwork
+
+  booking_postgres:
+    image: postgres:14-alpine
+    container_name: booking_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: +_+diyor2005+_+
+      POSTGRES_DB: booking
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - booking-db-data:/var/lib/postgresql/data
+      - ./booking-service/migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d booking || exit 1"]
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 10s
+    networks:
+      - mynetwork
+
+  migrate_booking:
+    image: migrate/migrate
+    volumes:
+      - ./booking-service/migrations:/migrations
+    command: ["-path", "/migrations", "-database", "postgres://postgres:+_+diyor2005+_+@booking_postgres:5432/booking?sslmode=disable", "up"]
+    depends_on:
+      booking_postgres:
+        condition: service_healthy
+    networks:
+      - mynetwork
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep -q PONG || exit 1"]
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 10s
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  hotel-db-data:
+  booking-db-data:
+  mongo-db-data:
+  consumer-user-data:

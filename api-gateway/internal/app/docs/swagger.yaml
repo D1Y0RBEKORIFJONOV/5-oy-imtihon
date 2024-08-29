@@ -1,0 +1,942 @@
+basePath: /
+definitions:
+  bookingentity.CreateBookingReq:
+    properties:
+      check_in_date:
+        type: string
+      check_out_date:
+        type: string
+      total_amount:
+        type: string
+    type: object
+  entity.AddRoomToHotelsReq:
+    properties:
+      availability:
+        type: string
+      price_per_night:
+        type: string
+      room_type:
+        type: string
+    type: object
+  entity.BookingRoomReq:
+    properties:
+      book:
+        type: boolean
+    type: object
+  entity.CreateHotelServiceReq:
+    properties:
+      address:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      rating:
+        type: string
+    type: object
+  entity.CreateUserReq:
+    properties:
+      address:
+        type: string
+      confirm_password:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+    type: object
+  entity.DeleteUserReq:
+    properties:
+      is_hard_deleted:
+        type: boolean
+    type: object
+  entity.GetAllHotelRes:
+    properties:
+      count:
+        type: integer
+      hotels:
+        items:
+          $ref: '#/definitions/entity.Hotel'
+        type: array
+    type: object
+  entity.GetAllUserRes:
+    properties:
+      count:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/entity.User'
+        type: array
+    type: object
+  entity.GetHotelsRoomsRes:
+    properties:
+      count:
+        type: integer
+      rooms:
+        items:
+          $ref: '#/definitions/entity.Room'
+        type: array
+    type: object
+  entity.Hotel:
+    properties:
+      address:
+        type: string
+      hotel_id:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      rating:
+        type: string
+    type: object
+  entity.LoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  entity.LoginRes:
+    properties:
+      token:
+        $ref: '#/definitions/entity.Token'
+    type: object
+  entity.Profile:
+    properties:
+      address:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      first_name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.Room:
+    properties:
+      availability:
+        type: string
+      price_per_night:
+        type: string
+      room_id:
+        type: string
+      room_is_busy:
+        type: boolean
+      room_type:
+        type: string
+    type: object
+  entity.StatusMessage:
+    properties:
+      message:
+        type: string
+    type: object
+  entity.Token:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  entity.UpdateEmailReq:
+    properties:
+      new_email:
+        type: string
+    type: object
+  entity.UpdateHotelReq:
+    properties:
+      address:
+        type: string
+      hotel_id:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+      rating:
+        type: string
+    type: object
+  entity.UpdateHotelsRoomReq:
+    properties:
+      availability:
+        type: string
+      price_per_night:
+        type: string
+      room_type:
+        type: string
+    type: object
+  entity.UpdatePasswordReq:
+    properties:
+      new_password:
+        type: string
+      password:
+        type: string
+    type: object
+  entity.UpdateUserReq:
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+    type: object
+  entity.User:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      profile:
+        $ref: '#/definitions/entity.Profile'
+    type: object
+  entity.VerifyUserReq:
+    properties:
+      email:
+        type: string
+      secret_code:
+        type: string
+    type: object
+host: localhost:9006
+info:
+  contact: {}
+  description: This is a sample server for a restaurant reservation system.
+  title: Artisan Connect
+  version: "1.0"
+paths:
+  /booking/add/waitlist/{hotel_id}/{room_type}:
+    post:
+      consumes:
+      - application/json
+      description: AddUserToWaitList hotel
+      parameters:
+      - description: hotel_id
+        in: path
+        name: hotel_id
+        required: true
+        type: string
+      - description: room_type
+        in: path
+        name: room_type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: AddUserToWaitList
+      tags:
+      - booking
+  /booking/create/{hotel_id}/{room_type}:
+    post:
+      consumes:
+      - application/json
+      description: CreateBooking hotel
+      parameters:
+      - description: hotel_id
+        in: path
+        name: hotel_id
+        required: true
+        type: string
+      - description: room_type
+        in: path
+        name: room_type
+        required: true
+        type: string
+      - description: ' '
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/bookingentity.CreateBookingReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: CreateBooking
+      tags:
+      - booking
+  /hotel/create:
+    post:
+      consumes:
+      - application/json
+      description: Register a new Hotel
+      parameters:
+      - description: User registration information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.CreateHotelServiceReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Hotel'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: CreateHotel
+      tags:
+      - hotel
+  /hotel/delete/{hotel_id}:
+    delete:
+      consumes:
+      - application/json
+      description: DeleteHotel hotel
+      parameters:
+      - description: hotel_id
+        in: path
+        name: hotel_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: DeleteHotel
+      tags:
+      - hotel
+  /hotel/get:
+    get:
+      consumes:
+      - application/json
+      description: getting hotel
+      parameters:
+      - description: Field
+        in: header
+        name: field
+        type: string
+      - description: Value
+        in: header
+        name: value
+        type: string
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.GetAllHotelRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: GetHotels
+      tags:
+      - hotel
+  /hotel/room/book/{hotel_id}/{room_id}:
+    put:
+      consumes:
+      - application/json
+      description: UpdateStatusBook hotel
+      parameters:
+      - description: hotel_id
+        in: path
+        name: hotel_id
+        required: true
+        type: string
+      - description: room_id
+        in: path
+        name: room_id
+        required: true
+        type: string
+      - description: ' '
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.BookingRoomReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Room'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: UpdateStatusBook
+      tags:
+      - room
+  /hotel/room/create/{hotel_id}:
+    post:
+      consumes:
+      - application/json
+      description: AddRoomToHotels hotel
+      parameters:
+      - description: hotel_id
+        in: path
+        name: hotel_id
+        required: true
+        type: string
+      - description: ' '
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.AddRoomToHotelsReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Room'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: AddRoomToHotels
+      tags:
+      - room
+  /hotel/room/delete/{hotel_id}/{room_id}:
+    delete:
+      consumes:
+      - application/json
+      description: DeleteHotelsRooms hotel
+      parameters:
+      - description: hotel_id
+        in: path
+        name: hotel_id
+        required: true
+        type: string
+      - description: room_id
+        in: path
+        name: room_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: DeleteHotelsRooms
+      tags:
+      - room
+  /hotel/room/gets/{hotel_id}:
+    get:
+      consumes:
+      - application/json
+      description: GetHotelsRooms hotel
+      parameters:
+      - description: Field
+        in: header
+        name: field
+        type: string
+      - description: Value
+        in: header
+        name: value
+        type: string
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: hotel_id
+        in: path
+        name: hotel_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.GetHotelsRoomsRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: GetHotelsRooms
+      tags:
+      - room
+  /hotel/room/update/{hotel_id}/{room_id}:
+    patch:
+      consumes:
+      - application/json
+      description: UpdateHotelsRooms hotel
+      parameters:
+      - description: hotel_id
+        in: path
+        name: hotel_id
+        required: true
+        type: string
+      - description: room_id
+        in: path
+        name: room_id
+        required: true
+        type: string
+      - description: ' '
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpdateHotelsRoomReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Room'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: UpdateHotelsRooms
+      tags:
+      - room
+  /hotel/update:
+    patch:
+      consumes:
+      - application/json
+      description: UpdateHotel hotel
+      parameters:
+      - description: ' '
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpdateHotelReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Hotel'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: UpdateHotel
+      tags:
+      - hotel
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve user information by field and value
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: GetUser
+      tags:
+      - user
+  /user/all:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve user information by field and value with pagination
+      parameters:
+      - description: Field to filter by
+        in: query
+        name: field
+        type: string
+      - description: Value to filter by
+        in: query
+        name: value
+        type: string
+      - description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of users" // Adjust this to match your user object structure
+          schema:
+            $ref: '#/definitions/entity.GetAllUserRes'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Get all users
+      tags:
+      - user
+  /user/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Authenticate a user and return a token
+      parameters:
+      - description: User login information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.DeleteUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.StatusMessage'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: DeleteUser
+      tags:
+      - user
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user and return a token
+      parameters:
+      - description: User login information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.LoginRes'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: Login
+      tags:
+      - auth
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: User registration information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.CreateUserReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.StatusMessage'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Register
+      tags:
+      - auth
+  /user/update:
+    put:
+      consumes:
+      - application/json
+      description: Authenticate a user and return a token
+      parameters:
+      - description: User login information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpdateUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.StatusMessage'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: UpdateUser
+      tags:
+      - user
+  /user/update/email:
+    put:
+      consumes:
+      - application/json
+      description: Authenticate a user and return a token
+      parameters:
+      - description: User login information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpdateEmailReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.StatusMessage'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: UpdateEmail
+      tags:
+      - user
+  /user/update/password:
+    put:
+      consumes:
+      - application/json
+      description: Authenticate a user and return a token
+      parameters:
+      - description: User login information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpdatePasswordReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.StatusMessage'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: UpdatePassword
+      tags:
+      - user
+  /user/verify:
+    post:
+      consumes:
+      - application/json
+      description: Confirm the code sent to the email
+      parameters:
+      - description: User verification information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.VerifyUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.StatusMessage'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      summary: VerifyUser
+      tags:
+      - auth
+schemes:
+- https
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
