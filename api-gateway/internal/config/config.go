@@ -92,7 +92,7 @@ func New() *Config {
 	config.MessageBrokerUses.Keys.Update = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE"))
 	config.MessageBrokerUses.Keys.UpdateEmail = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE_EMAIL"))
 	config.MessageBrokerUses.Keys.UpdatePassword = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "UPDATE_PASSWORD"))
-	config.MessageBrokerUses.TopicBooking = getEnv("MESSAGE_BROKER_USE_TOKEN", "BOOKING_SERVICE")
+	config.MessageBrokerUses.TopicBooking = getEnv("MESSAGE_BROKER_USE_TOKEN", "USER_SERVICE")
 	config.MessageBrokerUses.KeysBooking.CreateOrder = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "CREATE_ORDER"))
 	config.MessageBrokerUses.KeysBooking.AddWaitGroup = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "ADD_WAIT"))
 	return &config

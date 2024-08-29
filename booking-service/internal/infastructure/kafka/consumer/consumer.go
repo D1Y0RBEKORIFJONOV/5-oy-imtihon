@@ -117,11 +117,11 @@ func (c *Consumer) createOrder(ctx context.Context, value []byte) (bool, error) 
 	if err != nil {
 		return false, err
 	}
-
+	log.Println("AAAAAAAAAAAAAAAAAAA", user)
 	status, err := c.user.BookingServiceClient().CreateBooking(ctx, req)
 	if status != nil && status.IsError {
 		_, err = c.user.NotificationServiceClient().AddNotification(ctx, &notificationpb.AddNotificationReq{
-			UserId: user.Id,
+			UserId: req.UserID,
 			Messages: &notificationpb.CreateMessage{
 				SenderName: "BOOKING-SERVICE",
 				Status:     "ushbu type dagi honada joy qolamagan!",

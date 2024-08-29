@@ -79,7 +79,7 @@ func New() *Config {
 	config.UserUrl = getEnv("User_URL", "user_service_container:9000")
 
 	config.MessageBrokerUses.URL = getEnv("KAFKA_URL", "broker:29092")
-	config.MessageBrokerUses.Topic = getEnv("MESSAGE_BROKER_USE_TOKEN", "BOOKING_SERVICE")
+	config.MessageBrokerUses.Topic = getEnv("MESSAGE_BROKER_USE_TOKEN", "USER_SERVICE")
 	config.MessageBrokerUses.Keys.CreateOrder = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "CREATE_ORDER"))
 	config.MessageBrokerUses.Keys.AddWaitGroup = []byte(getEnv("MESSAGE_BROKER_USE_KEY", "ADD_WAIT"))
 	config.NotificationUrl = getEnv("NOTIFICATION_URCL", "notification_service_container:9001")
